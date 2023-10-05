@@ -21,6 +21,18 @@ DocuBot supports the following document types:
 
 Please note that while DocuBot to provide accurate information with proper citations, there might be situations where it may not have access to the required resources or may not be able to generate an answer.
 
+## Prerequisites
+
+Before using DocuBot, you need to have the following:
+
+- [OpenAI API key and linked credit card or a paid account](https://platform.openai.com/signup)
+- [Pinecone API and ENVIRONMENT keys](https://www.pinecone.io/)
+
+To avoid OpenAI rate-limiting issues, it is recommended to preload funds into your OpenAI account. This ensures that you have sufficient credits to make multiple requests during the document indexing phase.
+
+**Note:** DocuBot provides an estimated cost of indexing documents at the beginning of the process. This helps you understand the potential cost implications before proceeding. Please review the estimated cost and ensure that you have sufficient funds in your OpenAI account to cover the indexing process.
+
+
 ## Installation
 
 To use DocuBot, follow these steps:
@@ -39,13 +51,13 @@ To use DocuBot, follow these steps:
 
 3. Set up your environment variables:
 
-   - Copy the `.env.template` file to a new file called `.env`.
+   - In the `docubot` top-level directory, copy the `.env.template` file to a new file called `.env`.
    - Open the `.env` file and add the following API keys:
      - `PINECONE_API_KEY`: Your Pinecone API key
-     - `PINECONE_ENV`: The environment where your Pinecone index is hosted (e.g., "us-west1")
+     - `PINECONE_ENV`: The environment where your Pinecone index is hosted (e.g., "gcp-starter")
      - `OPENAI_API_KEY`: Your OpenAI API key
 
-   Make sure to replace the placeholder values with your actual API keys.
+   Make sure to replace the placeholder values with your actual API keys and ENV variables.
 
 
 4. Collect documents you want DocuBot to work with in a local sub-directory:
@@ -58,7 +70,7 @@ To use DocuBot, follow these steps:
    Since this project was internally developed at Ethereum, there is a scripts folder in which you can find an ethereum specific document downloader. To use the ethereum downloader script, do:
 
    ```bash
-   ./scripts/bash/download_ethereum.sh ethereum-docs
+   cd docubot && ./scripts/bash/download_ethereum.sh ethereum-docs
    ```
 
    You could create a similar script for your specific use-case.

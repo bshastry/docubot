@@ -288,9 +288,13 @@ def fetch_vector_store(index_name: str) -> Pinecone:
     if index_name not in pinecone.list_indexes():
         raise ValueError(f"Index {index_name} does not exist.")
     try:
+        print(f"Fetching {index_name}... ", end="")
         vector_store = Pinecone.from_existing_index(
             index_name=index_name, embedding=embeddings
         )
+        print(f"Done")
+        vector_store_len = len(vector_store)
+        print(f"Number of chunks in {index_name}: {vector_store_len}")
     except pinecone.exceptions.PineconeException as e:
         raise pinecone.exceptions.PineconeException(
             f"Error fetching embeddings: {str(e)}"
