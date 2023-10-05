@@ -73,7 +73,7 @@ def build_kb(data_directory: str) -> List[T]:
         data.extend(load_document(doc_name))
 
     print(f"There are {len(data)} pages in the knowledge base")
-    chunks = chunk_data(data, chunk_size=512)
+    chunks = chunk_data(data, chunk_size=512, chunk_overlap=20)
     print(f"These have been split into {len(chunks)} chunks for indexing")
     return chunks
 

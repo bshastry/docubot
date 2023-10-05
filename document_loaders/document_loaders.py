@@ -143,7 +143,9 @@ def load_document(document_name: str) -> List[T]:
             return None
 
 
-def chunk_data(data: str, chunk_size: int = 512) -> List[T]:
+def chunk_data(
+    data: List[T], chunk_size: int = 512, chunk_overlap: int = 20
+) -> List[T]:
     """
     Splits the input data into chunks of specified size using a RecursiveCharacterTextSplitter.
 
@@ -159,7 +161,7 @@ def chunk_data(data: str, chunk_size: int = 512) -> List[T]:
 
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=chunk_size,
-        chunk_overlap=20,
+        chunk_overlap=chunk_overlap,
         length_function=tiktoken_len,
         separators=["\n\n", "\n", " ", ""],
     )
