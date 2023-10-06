@@ -30,6 +30,12 @@ jobs:
         id: bandit
         run: bandit -r . --format json -o bandit_results.json
 
+      - name: Save Bandit Results as Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: bandit-results
+          path: bandit_results.json
+
       - name: Determine Badge URL
         id: determine_badge
         run: |
@@ -51,9 +57,8 @@ jobs:
           EOF
           chmod +x badge.py
           python badge.py
-          echo "::set-output name=badge_url::$(python badge.py)"
+          echo "badge_url=$(python badge.py)" >> "$GITHUB_ENV"
 
       - name: Update README with Badge
         run: |
-          badge_url=${{ steps.determine_badge.outputs.badge_url }}
           sed -i "s|!\[Bandit Workflow\]\([^)]+\)|![Bandit Workflow](${badge_url})|" README.md
