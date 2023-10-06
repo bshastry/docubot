@@ -27,4 +27,33 @@ jobs:
           pip install bandit
 
       - name: Run Bandit
-        run: bandit -r .
+        id: bandit
+        run: bandit -r . --format json -o bandit_results.json
+
+      - name: Determine Badge URL
+        id: determine_badge
+        run: |
+          cat<<EOF>>badge.py
+          import json
+
+          with open('bandit_results.json') as f:
+              results = json.load(f)
+
+          if results['metrics']['_totals']['SEVERITY.HIGH'] > 0 or results['metrics']['_totals']['SEVERITY.MEDIUM'] > 0 or results['metrics']['_totals']['SEVERITY.LOW'] > 0:
+              badge_url = 'https://img.shields.io/badge/Bandit-Issues%20Detected-red?label=high%3A{}%20medium%3A{}%20low%3A{}'.format(
+                  results['metrics']['_totals']['SEVERITY.HIGH'],
+                  results['metrics']['_totals']['SEVERITY.MEDIUM'],
+                  results['metrics']['_totals']['SEVERITY.LOW']
+              )
+          else:
+              badge_url = 'https://img.shields.io/badge/Bandit-No%20Issues%20Found-brightgreen'
+          print(badge_url)
+          EOF
+          chmod +x badge.py
+          python badge.py
+          echo "::set-output name=badge_url::$(python badge.py)"
+
+      - name: Update README with Badge
+        run: |
+          badge_url=${{ steps.determine_badge.outputs.badge_url }}
+          sed -i "s|!\[Bandit Workflow\]\([^)]+\)|![Bandit Workflow](${badge_url})|" README.md
