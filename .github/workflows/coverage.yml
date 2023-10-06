@@ -1,0 +1,94 @@
+name: Run Coverage
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install coverage
+
+      - name: Run tests with coverage
+        run: |
+          coverage run -m unittest discover -s tests -p "test_*.py"
+
+      - name: Generate coverage report
+        run: |
+          coverage html --directory coverage_html_report
+          coverage report -m > coverage_report.txt
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report
+          path: |
+            coverage_html_report/
+            coverage_report.txt
+
+      - name: Set up coverage badge
+        uses: actions/github-script@v4
+        with:
+          script: |
+                const fs = require('fs');
+ 
+                const coverageReport = fs.readFileSync('coverage_report.txt', 'utf8');
+                // Extract the total coverage percentage
+                const regex = /TOTAL\s+(\d+)\s+(\d+)\s+(\d+)%/;
+                const matches = coverageReport.match(regex);
+                const totalStatements = parseInt(matches[1]);
+                const missedStatements = parseInt(matches[2]);
+                const coveragePercentage = parseInt(matches[3]);
+                let badgeColor = 'brightgreen';
+
+                if (coveragePercentage < 80) {
+                  badgeColor = 'red';
+                } else if (coveragePercentage < 90) {
+                  badgeColor = 'yellow';
+                }
+                const badgeMarkdown = `![Coverage](https://img.shields.io/badge/Coverage-${coveragePercentage}%25-${badgeColor})`;
+
+                const octokit = github.getOctokit(process.env.GITHUB_TOKEN || secrets.DOCUBOT_BADGE_SECRET);
+                const { owner, repo } = github.context.repo;
+ 
+                octokit.rest.repos.getContent({
+                  owner,
+                  repo,
+                  path: 'README.md',
+                }).then(({ data }) => {
+                  const readmeContent = Buffer.from(data.content, 'base64').toString('utf-8');
+                  const updatedReadme = readmeContent.replace(/!\[Coverage\]\(.*\)/, badgeMarkdown);
+
+                  octokit.rest.repos.createOrUpdateFileContents({
+                    owner,
+                    repo,
+                    path: 'README.md',
+                    message: 'Update coverage badge',
+                    content: Buffer.from(updatedReadme).toString('base64'),
+                    sha: data.sha,
+                  }).then(() => {
+                    console.log('Coverage badge updated successfully.');
+                  }).catch((error) => {
+                    core.setFailed(`Failed to update coverage badge: ${error}`);
+                  });
+                }).catch((error) => {
+                  core.setFailed(`Failed to get README file: ${error}`);
+                });
