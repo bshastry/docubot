@@ -68,7 +68,7 @@ jobs:
                 }
                 const badgeMarkdown = `![Coverage](https://img.shields.io/badge/Coverage-${coveragePercentage}%25-${badgeColor})`;
                 console.log("Token", "$TOKEN");
-                const octokit = github.getOctokit("$TOKEN");
+                const octokit = github.getOctokit(process.env.TOKEN);
                 const { owner, repo } = github.context.repo;
  
                 octokit.rest.repos.getContent({
