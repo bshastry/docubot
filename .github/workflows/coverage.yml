@@ -46,6 +46,8 @@ jobs:
 
       - name: Set up coverage badge
         uses: actions/github-script@v4
+        env:
+          TOKEN: ${{ secrets.DOCUBOT_BADGE_SECRET }}
         with:
           script: |
                 const fs = require('fs');
@@ -66,7 +68,7 @@ jobs:
                 }
                 const badgeMarkdown = `![Coverage](https://img.shields.io/badge/Coverage-${coveragePercentage}%25-${badgeColor})`;
 
-                const octokit = github.getOctokit(process.env.GITHUB_TOKEN || secrets.DOCUBOT_BADGE_SECRET);
+                const octokit = github.getOctokit("$TOKEN");
                 const { owner, repo } = github.context.repo;
  
                 octokit.rest.repos.getContent({
