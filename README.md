@@ -1,6 +1,6 @@
 # DocuBot
 
-[![Run Tests](https://github.com/bshastry/docubot/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/bshastry/docubot/actions/workflows/tests.yml)
+[![Run Tests](https://github.com/bshastry/docubot/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/bshastry/docubot/actions/workflows/tests.yml)[![Bandit Security Scan](https://github.com/bshastry/docubot/actions/workflows/bandit.yaml/badge.svg?branch=main)](https://github.com/bshastry/docubot/actions/workflows/bandit.yaml)[![Run Coverage](https://github.com/bshastry/docubot/actions/workflows/coverage.yml/badge.svg?branch=main)](https://github.com/bshastry/docubot/actions/workflows/coverage.yml)
 
 DocuBot is a command-line chatbot that answers questions using a knowledge base of documents provided by you.
 It allows you to interactively get answers to questions with citations from the documents provided.
