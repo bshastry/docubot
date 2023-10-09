@@ -6,7 +6,7 @@ import math
 EMBEDDING_COST_PER_TOKEN = 0.0000001
 
 
-class TestDocumentLoaders(unittest.TestCase):
+class TestTextUtils(unittest.TestCase):
     def test_tiktoken_len(self):
         assert tiktoken_len("Hello, world!") == 4
         assert tiktoken_len("This is a sentence.") == 5
