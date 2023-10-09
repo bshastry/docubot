@@ -43,7 +43,6 @@ def embedding_cost(document: List[T]) -> float:
     """
 
     total_tokens = sum([tiktoken_len(page.page_content) for page in document])
-    print(f"Total tokens: {total_tokens}")
     return (total_tokens / 1000) * 0.0001
 
 
