@@ -1,6 +1,5 @@
 from text_utils.text_utils import tiktoken_len, embedding_cost, return_url_extension
 import unittest
-import math
 
 # As of 2021-10-20, the cost of embedding a single token using OpenAI is $0.0000001
 EMBEDDING_COST_PER_TOKEN = 0.0000001
@@ -8,9 +7,9 @@ EMBEDDING_COST_PER_TOKEN = 0.0000001
 
 class TestTextUtils(unittest.TestCase):
     def test_tiktoken_len(self):
-        assert tiktoken_len("Hello, world!") == 4
-        assert tiktoken_len("This is a sentence.") == 5
-        assert tiktoken_len("This is a longer sentence with more words.") == 9
+        self.assertEqual(tiktoken_len("Hello, world!"), 4)
+        self.assertEqual(tiktoken_len("This is a sentence."), 5)
+        self.assertEqual(tiktoken_len("This is a longer sentence with more words."), 9)
 
     def test_embedding_cost(self):
         class Page:
@@ -25,8 +24,8 @@ class TestTextUtils(unittest.TestCase):
         num_tokens = 0
         for page in document:
             num_tokens += tiktoken_len(page.page_content)
-        assert num_tokens == 18
-        assert math.isclose(
+        self.assertEqual(num_tokens, 18)
+        self.assertAlmostEquals(
             embedding_cost(document), num_tokens * EMBEDDING_COST_PER_TOKEN
         )
 
@@ -38,25 +37,29 @@ class TestTextUtils(unittest.TestCase):
         ]
         for page in document:
             num_tokens += tiktoken_len(page.page_content)
-        assert num_tokens == 29
-        assert math.isclose(
+        self.assertEqual(num_tokens, 29)
+        self.assertAlmostEqual(
             embedding_cost(document), (num_tokens * EMBEDDING_COST_PER_TOKEN)
         )
 
     def test_return_url_extension(self):
-        assert return_url_extension("https://www.example.com/index.html") == ".html"
-        assert (
-            return_url_extension("https://www.example.com/path/to/file.txt") == ".txt"
+        self.assertEqual(
+            return_url_extension("https://www.example.com/index.html"), ".html"
         )
-        assert (
-            return_url_extension("https://www.example.com/path/to/image.jpg") == ".jpg"
+        self.assertEqual(
+            return_url_extension("https://www.example.com/path/to/file.txt"), ".txt"
         )
-        assert return_url_extension("https://www.example.com/path/to/doc.pdf") == ".pdf"
-        assert (
-            return_url_extension("https://www.example.com/path/to/README.md") == ".md"
+        self.assertEqual(
+            return_url_extension("https://www.example.com/path/to/image.jpg"), ".jpg"
         )
-        assert (
-            return_url_extension("https://www.example.com/path/to/ms.docx") == ".docx"
+        self.assertEqual(
+            return_url_extension("https://www.example.com/path/to/doc.pdf"), ".pdf"
+        )
+        self.assertEqual(
+            return_url_extension("https://www.example.com/path/to/README.md"), ".md"
+        )
+        self.assertEqual(
+            return_url_extension("https://www.example.com/path/to/ms.docx"), ".docx"
         )
 
 
