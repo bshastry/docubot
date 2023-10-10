@@ -1,4 +1,8 @@
-from text_utils.text_utils import tiktoken_len, embedding_cost, return_url_extension
+from text_utils.text_utils import (
+    tiktoken_len,
+    num_tokens_and_cost,
+    return_url_extension,
+)
 import unittest
 
 # As of 2021-10-20, the cost of embedding a single token using OpenAI is $0.0000001
@@ -21,26 +25,18 @@ class TestTextUtils(unittest.TestCase):
             Page("This is the second page."),
             Page("This is the third page."),
         ]
-        num_tokens = 0
-        for page in document:
-            num_tokens += tiktoken_len(page.page_content)
+        num_tokens, cost = num_tokens_and_cost(document)
         self.assertEqual(num_tokens, 18)
-        self.assertAlmostEquals(
-            embedding_cost(document), num_tokens * EMBEDDING_COST_PER_TOKEN
-        )
+        self.assertAlmostEquals(cost, num_tokens * EMBEDDING_COST_PER_TOKEN)
 
-        num_tokens = 0
         document = [
             Page("This is a short page."),
             Page("This is a longer page with more words."),
             Page("This is the longest page of them all, with many many words."),
         ]
-        for page in document:
-            num_tokens += tiktoken_len(page.page_content)
+        num_tokens, cost = num_tokens_and_cost(document)
         self.assertEqual(num_tokens, 29)
-        self.assertAlmostEqual(
-            embedding_cost(document), (num_tokens * EMBEDDING_COST_PER_TOKEN)
-        )
+        self.assertAlmostEqual(cost, (num_tokens * EMBEDDING_COST_PER_TOKEN))
 
     def test_return_url_extension(self):
         self.assertEqual(

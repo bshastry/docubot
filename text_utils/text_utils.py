@@ -31,19 +31,20 @@ def tiktoken_len(text: str) -> int:
     return len(tokens)
 
 
-def embedding_cost(document: List[T]) -> float:
+def num_tokens_and_cost(document: List[T]) -> (int, float):
     """
-    Calculates the embedding cost for a list of texts.
+    Calculates the total number of tokens and cost for a list of texts.
 
     Args:
-    - document (List[T]): A list of texts to calculate the embedding cost for.
+    - document (List[T]): A list of texts to calculate the number of tokens and cost for.
 
     Returns:
-    - float: The embedding cost for the given list of texts.
+    - int: The total number of tokens for the given list of texts.
+    - float: The cost for the given list of texts.
     """
 
     total_tokens = sum([tiktoken_len(page.page_content) for page in document])
-    return (total_tokens / 1000) * 0.0001
+    return total_tokens, (total_tokens / 1000) * 0.0001
 
 
 def return_url_extension(url: str) -> str:

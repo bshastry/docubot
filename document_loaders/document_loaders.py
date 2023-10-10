@@ -167,3 +167,16 @@ def chunk_data(
     )
     chunks = text_splitter.split_documents(data)
     return chunks
+
+
+def merge_document(document: List[T]) -> str:
+    """
+    Merge a list of documents into a single string.
+
+    Args:
+        document (List[T]): A list of documents to merge.
+
+    Returns:
+        str: A single string containing the merged documents.
+    """
+    return "\n\n".join([page.page_content for page in document])

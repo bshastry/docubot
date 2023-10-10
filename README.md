@@ -1,21 +1,23 @@
-# DocuBot
+# DocuBot and DocuSense
 
 [![Run Tests](https://github.com/bshastry/docubot/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/bshastry/docubot/actions/workflows/tests.yml)[![Bandit Security Scan](https://github.com/bshastry/docubot/actions/workflows/bandit.yaml/badge.svg?branch=main)](https://github.com/bshastry/docubot/actions/workflows/bandit.yaml)[![Run Coverage](https://github.com/bshastry/docubot/actions/workflows/coverage.yml/badge.svg?branch=main)](https://github.com/bshastry/docubot/actions/workflows/coverage.yml)
 
-DocuBot is a command-line chatbot that answers questions using a knowledge base of documents provided by you.
+DocuBot and DocuSense are command-line tools.
+DocuBot is a chatbot that answers questions using a knowledge base of documents provided by you.
 It allows you to interactively get answers to questions with citations from the documents provided.
-It is written in Python3.
+DocuSense summarizes the document provided by you.
+They are written in Python3.
 
 ## Supported Document Types
 
-DocuBot supports the following document types:
+DocuBot and DocuSense supports the following document types:
 
 - .pdf: Portable Document Format
 - .docx: Microsoft Word Document
 - .md: Markdown Document
 - .txt: Plain Text Document
 
-## Features
+## DocuBot Features
 
 - Session based: DocuBot remembers previous interactions within the current session.
 - Citations provided: DocuBot generates answers based on information from specific documents. It provides citations to these documents, including page numbers if available.
@@ -34,10 +36,12 @@ To avoid OpenAI rate-limiting issues, it is recommended to preload funds into yo
 
 **Note:** DocuBot provides an estimated cost of indexing documents at the beginning of the process. This helps you understand the potential cost implications before proceeding. Please review the estimated cost and ensure that you have sufficient funds in your OpenAI account to cover the indexing process.
 
+For using DocuSense, pinecone API and ENVIRONMENT keys are not required.
+
 
 ## Installation
 
-To use DocuBot, follow these steps:
+To use DocuBot and DocuSense, follow these steps:
 
 1. Clone the repository:
 
@@ -60,6 +64,7 @@ To use DocuBot, follow these steps:
      - `OPENAI_API_KEY`: Your OpenAI API key
 
    Make sure to replace the placeholder values with your actual API keys and ENV variables.
+   If you are only going to use DocuSense, providing an `OPENAI_API_KEY` is sufficient.
 
 
 4. Collect documents you want DocuBot to work with in a local sub-directory:
@@ -77,7 +82,11 @@ To use DocuBot, follow these steps:
 
    You could create a similar script for your specific use-case.
 
-5. Run the `docubot.py` script:
+   For using DocuSense, you need to provide a single document, so please ignore this step.
+
+5. Run the script:
+
+   To use DocuBot, run
 
    ```bash
    python3 docubot.py /path/to/documents/directory
@@ -85,11 +94,21 @@ To use DocuBot, follow these steps:
 
    Please replace `/path/to/documents/directory` with the path to the directory that holds documents you want DocuBot to interface with (e.g., `ethereum-docs` from the previous step)
 
+   To use DocuSense, run
+   
+   ```
+   python3 docusense.py /path/to/document /path/to/summary.txt [--chunk_size <chunk_size>] [--chunk_overlap <chunk_overlap>]
+   ```
+   `--chunk_size` and `--chunk_overlap` are optional arguments that accept the size of chunk of document and the overlap between chunks (both measured in OpenAI tokens).
+   `--chunk_size` defaults to 3300 tokens, and `--chunk_overlap` defaults to 100 tokens.
+   
+**Note:** DocuSense splits a large document into smaller chunks if it may not be summarized in one shot. The chunk size and overlap impact of large documents are summarized. For example, smaller chunk sizes and larger chunk overlaps may result in an increased number of OpenAPI calls but offer finer granularity. The defaults have been chosen as a balance between summarization cost and accuracy. The defaults may not work for every document, so you can use these parameters to arrive at a trade-off that is acceptable to you.
+
 ## Usage
 
 Once DocuBot is running, you can start asking questions. Simply type your question and press Enter. To quit DocuBot, type "quit" or "exit".
 
-## Examples
+## DocuBot Examples
 
 Here are some examples of questions you can ask DocuBot:
 
@@ -123,6 +142,6 @@ If you'd like to contribute to this project, please open an issue or submit a pu
 
 ## Liability Information
 
-DocuBot is released under the MIT license. Please note that while DocuBot is designed to provide useful information, it should not be considered a substitute for professional advice. The developers and contributors of DocuBot shall not be held liable for any damages or losses arising from the use of this application.
+DocuBot and DocuSense are released under the MIT license. Please note that while they are designed to provide useful information, it should not be considered a substitute for professional advice. The developers and contributors of DocuBot and DocuSense shall not be held liable for any damages or losses arising from the use of this application.
 
-It is recommended to use DocuBot responsibly and exercise caution when relying on its responses. If in doubt, it is always a good idea to consult with domain experts or refer to trusted sources for accurate information.
+It is recommended to use DocuBot and DocuSense responsibly and exercise caution when relying on its responses. If in doubt, it is always a good idea to consult with domain experts or refer to trusted sources for accurate information.

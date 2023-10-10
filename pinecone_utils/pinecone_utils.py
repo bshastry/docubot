@@ -56,12 +56,13 @@ def create_vector_store(index_name: str, chunks: List[T]) -> Pinecone:
     import pinecone
     from langchain.vectorstores import Pinecone
     from langchain.embeddings.openai import OpenAIEmbeddings
-    from text_utils.text_utils import embedding_cost
+    from text_utils.text_utils import num_tokens_and_cost
 
+    num_tokens, cost = num_tokens_and_cost(chunks)
     # Prompt user whether they want to continue, quit if they don't
     while True:
         user_input = input(
-            f"Cost Estimate: ${embedding_cost(chunks):.4f}\n"
+            f"Cost Estimate: ${cost:.4f} for {num_tokens} tokens\n"
             f"Would you like to continue? (y/n)\n"
         )
         if user_input.lower() == "y":

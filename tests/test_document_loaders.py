@@ -35,8 +35,12 @@ from document_loaders.document_loaders import (
     load_from_wikipedia,
     load_document,
     chunk_data,
+    merge_document,
 )
 from text_utils.text_utils import tiktoken_len
+from typing import List, TypeVar
+
+T = TypeVar("T")
 
 
 class TestDocumentLoaders(unittest.TestCase):
@@ -96,20 +100,42 @@ class TestDocumentLoaders(unittest.TestCase):
         url_contents = load_document(url)
         self.assertIsInstance(url_contents, list)
 
-    def test_chunk_data(self):
+    def chunk_txt_file(self, chunk_size: int) -> List[T]:
         txt_file = "test_files/test.txt"
         txt_contents = load_document(txt_file)
-        # Chunk size in tokens (not characters)
-        chunk_size = 10
         # Number of tokens to overlap between chunks
         chunk_overlap = 5
         chunks = chunk_data(
             txt_contents, chunk_size=chunk_size, chunk_overlap=chunk_overlap
         )
+        return chunks
+
+    def test_chunk_data(self):
+        # Chunk size in tokens
+        chunk_size = 10
+        chunks = self.chunk_txt_file(chunk_size=chunk_size)
         self.assertIsInstance(chunks, list)
         self.assertGreater(len(chunks), 1)
         for chunk in chunks:
             self.assertLessEqual(tiktoken_len(chunk.page_content), chunk_size)
+
+    def test_merge_single_document(self):
+        txt_file = "test_files/test.txt"
+        document = load_txt_document(txt_file)
+        expected_output = "This is a text file that has more than ten characters.\n"
+        self.assertEqual(merge_document(document), expected_output)
+
+    def test_merge_multiple_documents(self):
+        # Chunk size in tokens
+        chunk_size = 10
+        chunks = self.chunk_txt_file(chunk_size=chunk_size)
+        expected_output = "This is a text file that has more than ten\n\nthat has more than ten characters."
+        self.assertEqual(merge_document(chunks), expected_output)
+
+    def test_merge_empty_document(self):
+        document = []
+        expected_output = ""
+        self.assertEqual(merge_document(document), expected_output)
 
 
 if __name__ == "__main__":
